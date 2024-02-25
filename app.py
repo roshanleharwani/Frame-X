@@ -16,7 +16,7 @@ migrate = Migrate(app, db)
 
 class Profile(db.Model):
     name = db.Column(db.String, primary_key=True)
-    email = db.Column(db.String(40), unique=True, nullable=False)
+    email = db.Column(db.String(40), unique=False, nullable=False)
     phone = db.Column(db.Integer, unique=False, nullable=False)
     password = db.Column(db.String(15), nullable=False)
 
@@ -38,14 +38,22 @@ def signup():
         phone = request.form.get("phone")
         email = request.form.get("email")
         password = request.form.get("password")
-        # confirm_password = request.form.get("confirm_password")
+        confirm_password = request.form.get("confirm_password")
+        if password == confirm_password:
+            #     name
+            #     and phone
+            #     and email
+            #     and password
+            #     and confirm_password
+            # ):
 
-        p = Profile(name=name, phone=phone, email=email, password=password)
-        print("Reached after creating profile")
-        db.session.add(p)
-        db.session.commit()
-        flash("You have signed up successfully!")
-        return redirect("/internship")
+            p = Profile(name=name, phone=phone, email=email, password=password)
+            db.session.add(p)
+            db.session.commit()
+            flash("You have signed up successfully!")
+            return redirect("/internship")
+        else:
+            render_template("signup.html")
 
     return render_template("signup.html")
 
