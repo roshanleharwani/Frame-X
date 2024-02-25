@@ -37,28 +37,29 @@
     <br>
     <div class="bg-rgb-17-24-39 shadow-3xl flex-grow flex items-center justify-center">
         <div class=" bg-rgb-17-24-39w-full max-w-xs">
-            <form action="/internship"  class="bg-rgb-17-24-39 shadow-3xl rounded px-8 pt-6 pb-8 mb-4">
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-2xl font-bold mb-2" for="username">
-                        Username
-                    </label>
-                    <input class="shadow-lg appearance-none border rounded w-full py-4 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Username">
-                </div>
-                <div class="mb-4">
-                    <label class="block text-gray-700 text-2xl font-bold mb-2" for="password">
-                        Password
-                    </label>
-                    <input class="shadow-lg appearance-none border rounded w-full py-4 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="text" placeholder="Password">
-                </div>
-                <div class="flex items-center justify-between">
-                    <button type='submit' class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-                        Sign In
-                    </button>
-                    <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
-                        Forgot Password?
-                    </a>
-                </div>
-            </form>
+          <form action="/" method="post" class="bg-rgb-17-24-39 shadow-3xl rounded px-8 pt-6 pb-8 mb-4">
+            <div class="mb-4">
+                <label class="block text-gray-700 text-2xl font-bold mb-2" for="name">
+                    Username
+                </label>
+                <input name="name" class="shadow-lg appearance-none border rounded w-full py-4 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" placeholder="Username">
+            </div>
+            <div class="mb-4">
+                <label class="block text-gray-700 text-2xl font-bold mb-2" for="password">
+                    Password
+                </label>
+                <input name="password" class="shadow-lg appearance-none border rounded w-full py-4 px-8 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="password" type="password" placeholder="Password">
+            </div>
+            <div class="flex items-center justify-between">
+                <button type='submit' class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">
+                    Sign In
+                </button>
+                <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="#">
+                    Forgot Password?
+                </a>
+            </div>
+        </form>
+        
            
         </div>
     </div>

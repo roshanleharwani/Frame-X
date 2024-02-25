@@ -1,34 +1,32 @@
-from flask import Flask, render_template, request, redirect, flash
+from flask import Flask, render_template, request, redirect, flash, session
 from flask import render_template
-from flask_sqlalchemy import SQLAlchemy
-from flask_migrate import Migrate, migrate
+from flask_pymongo import PyMongo
 
 app = Flask(__name__)
-
+app.config["MONGO_URI"] = "mongodb://localhost:27017/Database"
+mongo = PyMongo(app)
+users = mongo.db.users
 app.config["SECRET_KEY"] = "kjsdfjsdjfsdfosfpsoifjsodfosjfosdfosjfsf"
 
-app.config["SQLALCHEMY_DATABASE_URI"] = "sqlite:///site.db"
 
-db = SQLAlchemy(app)
-
-migrate = Migrate(app, db)
-
-
-class Profile(db.Model):
-    name = db.Column(db.String, primary_key=True)
-    email = db.Column(db.String(40), unique=False, nullable=False)
-    phone = db.Column(db.Integer, unique=False, nullable=False)
-    password = db.Column(db.String(15), nullable=False)
-
-
-@app.route("/")
+@app.route("/", methods=["GET", "POST"])
 def home():
+    if request.method == "POST":
+        name = request.form["name"]
+        password = request.form["password"]
+        print(name, password)
+        user = users.find_one({"name": name})
+        if user:
+            if user.get("password") == password:
+                session["user"] = name
+                return redirect("/internship")
+            else:
+                flash("Wrong Password! Please try again.")
+                return redirect(request.url)
+        else:
+            flash("User Does not exist !!")
+            return redirect(request.url)
     return render_template("index.html")
-
-
-@app.route("/contact")
-def contact():
-    return render_template("contact.html")
 
 
 @app.route("/signup", methods=["GET", "POST"])
@@ -39,23 +37,21 @@ def signup():
         email = request.form.get("email")
         password = request.form.get("password")
         confirm_password = request.form.get("confirm_password")
-        if password == confirm_password:
-            #     name
-            #     and phone
-            #     and email
-            #     and password
-            #     and confirm_password
-            # ):
-
-            p = Profile(name=name, phone=phone, email=email, password=password)
-            db.session.add(p)
-            db.session.commit()
-            flash("You have signed up successfully!")
+        if name and email and phone and password and password == confirm_password:
+            users.insert_one(
+                {"name": name, "phone": phone, "email": email, "password": password}
+            )
+            flash("Successfully signed up")
             return redirect("/internship")
         else:
-            render_template("signup.html")
-
+            flash("Failed to sign up")
+            return render_template("signup.html")
     return render_template("signup.html")
+
+
+@app.route("/contact")
+def contact():
+    return render_template("contact.html")
 
 
 @app.route("/internship")
