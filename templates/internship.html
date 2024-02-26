@@ -18,9 +18,26 @@
           <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
              
           </nav>
-          
+          <a href="/logout"><button class="inline-flex items-center  border-0 py-1 px-3 focus:outline-none hover:bg-red-500 rounded text-base text-white mt-4 md:mt-0">Log Out
+            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
+              <path d="M5 12h14M12 5l7 7-7 7"></path>
+            </svg>
+          </button></a>
         </div>
       </header>
+      {%  if get_flashed_messages() %}
+        {% for message in get_flashed_messages() %}
+        <div class="flex items-center p-4 mb-4 text-xl text-green-800 border border-green-300 rounded-lg bg-green-50 dark:bg-gray-800 dark:text-green-400 dark:border-green-800" role="alert">
+            <svg class="flex-shrink-0 inline w-4 h-4 me-3" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="currentColor" viewBox="0 0 20 20">
+              <path d="M10 .5a9.5 9.5 0 1 0 9.5 9.5A9.51 9.51 0 0 0 10 .5ZM9.5 4a1.5 1.5 0 1 1 0 3 1.5 1.5 0 0 1 0-3ZM12 15H8a1 1 0 0 1 0-2h1v-3H8a1 1 0 0 1 0-2h2a1 1 0 0 1 1 1v4h1a1 1 0 0 1 0 2Z"/>
+            </svg>
+            <span class="sr-only">{{message}}</span>
+            <div>
+              <span class="font-medium">{{message}}</span>
+            </div>
+          </div>
+        {% endfor %}
+      {% endif %}
     <!-- Banner Component -->
     <div class="bg-blue-500 text-white p-4">
         <h1 class="text-4xl font-bold">Internship Opportunities</h1>
