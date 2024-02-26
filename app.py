@@ -1,6 +1,8 @@
 from flask import Flask, render_template, request, redirect, flash, session
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
+from werkzeug.utils import secure_filename
+import os
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/Database"
@@ -23,13 +25,13 @@ def home():
         if user:
             if bcrypt.check_password_hash(user.get("password"), password):
                 session["user"] = name
-                flash("  Success alert! You have Logged in successfully")
+                flash("Success alert! You have Logged in successfully")
                 return render_template("internship.html")
             else:
-                flash("  Wrong Password! Please try again.  ")
+                flash("Invalid Credentials !!  ")
                 return redirect(request.url)
         else:
-            flash("  User Does not exist !!  ")
+            flash("User Does not exist !!  ")
             return redirect(request.url)
 
     else:
@@ -55,15 +57,16 @@ def signup():
                         "password": hpassword,
                     }
                 )
-                flash("   Success alert! You have Signed UP successfully ")
+                flash("Success alert! You have Signed UP successfully ")
+                session["user"] = name
                 return render_template("internship.html")
             else:
                 flash("Password does not match !!")
-                return render_template(request.url)
+                return render_template("signup.html")
 
         else:
             flash("All Fields are required")
-            return render_template(request.url)
+            return render_template("signup.html")
     return render_template("signup.html")
 
 
@@ -74,14 +77,33 @@ def contact():
 
 @app.route("/apply")
 def apply():
-    return render_template("apply.html")
+    if "user" in session:
+        return render_template("apply.html")
 
 
 @app.route("/logout")
 def logout():
     session.pop("user", None)
-    flash("  Info alert! You have Logged Out Successfully  ")
+    flash("Info alert! You have Logged Out Successfully  ")
     return redirect("/")
+
+
+@app.route("/upload", methods=["GET", "POST"])
+def upload_file():
+    if "user" not in session:
+        return redirect(request.url)
+
+    if request.method == "POST":
+        file = request.files["resume"]
+        if file:
+            filename = secure_filename(file.filename)
+            file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
+            file.save(file_path)
+            # Save file metadata to MongoDB
+            mongo.db.users.insert_one({"filename": filename, "name": session["user"]})
+            flash("File uploaded Successfully")
+            return redirect(request.url)
+    return "Upload file"
 
 
 if __name__ == "__main__":
