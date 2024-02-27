@@ -2,13 +2,28 @@ from flask import Flask, render_template, request, redirect, flash, session
 from flask_pymongo import PyMongo
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
+from flask_mail import Mail, Message
 import os
+import json
+
+with open("config.json") as file:
+    data = json.load(file)
+    params = data["params"]
+
 
 app = Flask(__name__)
 app.config["MONGO_URI"] = "mongodb://localhost:27017/Database"
 mongo = PyMongo(app)
 users = mongo.db.users
 app.config["SECRET_KEY"] = "kjsdfjsdjfsdfosfpsoifjsodfosjfosdfosjfsf"
+app.config["MAIL_SERVER"] = "smtp.gmail.com"
+app.config["MAIL_PORT"] = 465
+app.config["MAIL_USE_SSL"] = True
+app.config["MAIL_USERNAME"] = params["email"]
+app.config["MAIL_PASSWORD"] = params["pass"]
+app.config["MAIL_DEFAULT_SENDER"] = params["email"]
+
+mail = Mail(app)
 
 bcrypt = Bcrypt(app)
 
@@ -70,9 +85,18 @@ def signup():
     return render_template("signup.html")
 
 
-@app.route("/contact")
+@app.route("/contact", methods=["GET", "POST"])
 def contact():
-    return render_template("contact.html")
+    if request.method == "POST":
+        email = request.form.get("email")
+        subject = request.form.get("subject")
+        msg = request.form.get("message")
+        message = Message(subject=subject, recipients=[params["email"]])
+        message.body = f"{msg}\n\nEmail: {email}"
+        mail.send(message)
+        return render_template("contact.html")
+    else:
+        return render_template("contact.html")
 
 
 @app.route("/apply")
@@ -92,6 +116,8 @@ def logout():
 def upload_file():
     if "user" not in session:
         return redirect(request.url)
+    else:
+        redirect(request.url)
 
     if request.method == "POST":
         file = request.files["resume"]

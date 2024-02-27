@@ -20,44 +20,38 @@
           <nav class="md:ml-auto md:mr-auto flex flex-wrap items-center text-base justify-center">
              
           </nav>
-          <a href="/signup"><button class="inline-flex items-center  border-0 py-1 px-3 focus:outline-none hover:bg-purple-500 rounded text-base text-white mt-4 md:mt-0">Sign Up
-            <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
-              <path d="M5 12h14M12 5l7 7-7 7"></path>
-            </svg>
-          </button></a>
+          
         </div>
       </header>
 
     <!-- Main Content -->
-    <main class="container mx-auto mt-8 px-4 flex justify-center items-center h-screen">
-        <div class="bg-rgb-17-24-39 bg-opacity-80 px-10 py-10 rounded-xl w-full max-w-md">
-            <h1 class="text-3xl font-semibold mb-4 py-4 text-white text-center">Contact Us</h1>
-            <form id="contact-form" class="space-y-4">
+    <section class="bg-gray-900 dark:bg-gray-900">
+        <div class="py-8 lg:py-16 px-4 mx-auto max-w-screen-md">
+            <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-center text-white dark:text-white">Contact Us</h2>
+            <p class="mb-8 lg:mb-16 font-light text-center text-gray-500 dark:text-gray-400 sm:text-xl">Got a technical issue? Want to send feedback about a beta feature? Need details about our Business plan? Let us know.</p>
+            <form action="/contact" method="post" class="space-y-8">
                 <div>
-                    <label for="name" class="text-white block mb-2">Name</label>
-                    <input type="text" name="name" id="name"
-                        class="w-full px-4 py-2 rounded-md shadow-inner bg-gray-800 text-white focus:outline-none focus:ring focus:border-purple-500"
-                        placeholder="Enter your name" required>
+                    <label for="email" class="block mb-2 text-xl font-medium text-white dark:text-gray-500">Your email</label>
+                    <input type="email" name="email" id="email" class="shadow-sm bg-gray-50 border border-gray-300 text-l text-black rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="example@gmail.com" required>
                 </div>
                 <div>
-                    <label for="email" class="text-white block mb-2">Email</label>
-                    <input type="email" name="email" id="email"
-                        class="w-full px-4 py-2 rounded-md shadow-inner bg-gray-800 text-white focus:outline-none focus:ring focus:border-purple-500"
-                        placeholder="Enter your email" required>
+                    <label for="subject" class="block mb-2 text-xl font-medium text-white dark:text-gray-500">Subject</label>
+                    <input type="text" name="subject" id="subject" class="block p-3 w-full text-l text-black bg-gray-50 rounded-lg border border-gray-300 shadow-sm focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500 dark:shadow-sm-light" placeholder="Let us know how we can help you" required>
                 </div>
-                <div>
-                    <label for="message" class="text-white block mb-2">Message</label>
-                    <textarea name="message" id="message"
-                        class="w-full px-4 py-2 rounded-md shadow-inner bg-gray-800 text-white focus:outline-none focus:ring focus:border-purple-500"
-                        placeholder="Enter your message" rows="5" required></textarea>
+                <div class="sm:col-span-2">
+                    <label for="message" class="block mb-2 text-xl font-medium text-white dark:text-gray-500">Your message</label>
+                    <textarea id="message" name="message" rows="6" class="block p-2.5 w-full text-l text-black bg-gray-50 rounded-lg shadow-sm border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500" placeholder="Leave a comment..."></textarea>
                 </div>
-                <button type="submit"
-                    class="bg-purple-700 text-white px-4 py-2 rounded-md hover:bg-purple-600 w-full">Send
-                    Message</button>
+                <button type="submit" class="inline-flex items-center bg-gray-300 text-gray-900 border-0 py-1 px-3 focus:outline-none hover:bg-red-500 rounded text-l text-white mt-4 md:mt-0">Send
+                    <svg fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" class="w-4 h-4 ml-1" viewBox="0 0 24 24">
+                      <path d="M5 12h14M12 5l7 7-7 7"></path>
+                    </svg>
+                  </button>
             </form>
         </div>
-    </main>
-
+      </section>
+    
+    <script src="" async defer></script>
     <!-- Footer -->
     <footer class="text-gray-400 bg-gray-900 body-font">
         <div class="container px-2 py-8 mx-auto flex items-center sm:flex-row flex-col">
