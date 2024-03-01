@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, flash, session
-from flask_pymongo import PyMongo
+from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
@@ -12,9 +12,11 @@ with open("config.json") as file:
 
 
 app = Flask(__name__)
-app.config["MONGO_URI"] = "mongodb://localhost:27017/Database"
-mongo = PyMongo(app)
-users = mongo.db.users
+uri = "mongodb+srv://roshanleharwani:kYBdCTFNi3u6ktif@users.lo1ne1j.mongodb.net/?retryWrites=true&w=majority&appName=Users"
+client = MongoClient(uri)
+db = client.users
+
+
 app.config["SECRET_KEY"] = "kjsdfjsdjfsdfosfpsoifjsodfosjfosdfosjfsf"
 app.config["MAIL_SERVER"] = "smtp.gmail.com"
 app.config["MAIL_PORT"] = 465
@@ -36,7 +38,7 @@ def home():
     if request.method == "POST":
         name = request.form["name"]
         password = request.form["password"]
-        user = users.find_one({"name": name})
+        user = db.users.find_one({"name": name})
         if user:
             if bcrypt.check_password_hash(user.get("password"), password):
                 session["user"] = name
@@ -64,7 +66,7 @@ def signup():
         if name and email and phone and password and password and confirm_password:
             if password == confirm_password:
                 hpassword = bcrypt.generate_password_hash(password).decode("utf-8")
-                users.insert_one(
+                db.users.insert_one(
                     {
                         "name": name,
                         "phone": phone,
@@ -125,12 +127,11 @@ def upload_file():
             filename = secure_filename(file.filename)
             file_path = os.path.join(app.config["UPLOAD_FOLDER"], filename)
             file.save(file_path)
-            # Save file metadata to MongoDB
-            mongo.db.users.insert_one({"filename": filename, "name": session["user"]})
+            db.users.insert_one({"filename": filename, "name": session["user"]})
             flash("File uploaded Successfully")
             return redirect(request.url)
     return "Upload file"
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(debug=True, host="0.0.0.0", port=9999)
