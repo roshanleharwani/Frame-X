@@ -1,10 +1,11 @@
-from flask import Flask, render_template, request, redirect, flash, session
+from flask import Flask, render_template, request, redirect, flash, session, url_for
 from pymongo import MongoClient
 from flask_bcrypt import Bcrypt
 from werkzeug.utils import secure_filename
 from flask_mail import Mail, Message
 import os
 import json
+import secrets
 
 with open("config.json") as file:
     data = json.load(file)
@@ -28,6 +29,10 @@ app.config["MAIL_DEFAULT_SENDER"] = params["email"]
 mail = Mail(app)
 
 bcrypt = Bcrypt(app)
+
+
+def generate_token():
+    return secrets.token_hex(16)
 
 
 @app.route("/", methods=["GET", "POST"])
@@ -112,6 +117,57 @@ def logout():
     session.pop("user", None)
     flash("Info alert! You have Logged Out Successfully  ")
     return redirect("/")
+
+
+@app.route("/reset_password/<token>", methods=["GET", "POST"])
+def reset_password(token):
+    user = db.users.find_one({"reset_token": token})
+    if user:
+        if request.method == "POST":
+            new_password = request.form["password"]
+            # Update user's password and remove the reset token
+            db.users.update_one(
+                {"reset_token": token},
+                {
+                    "$set": {
+                        "password": bcrypt.generate_password_hash(new_password),
+                        "reset_token": None,
+                    }
+                },
+            )
+            flash(
+                "Your password has been reset successfully. You can now login with your new password."
+            )
+            return redirect("/")
+        return render_template("reset_password_request.html", token=token)
+    else:
+        flash("Invalid or expired reset token.")
+        return redirect(url_for("home"))
+
+
+@app.route("/reset_password_request", methods=["GET", "POST"])
+def reset_password_request():
+    if request.method == "POST":
+        email = request.form["email"]
+        user = db.users.find_one({"email": email})
+        if user:
+            reset_token = generate_token()
+            # Store reset_token in the database with the user's email
+            db.users.update_one(
+                {"email": email}, {"$set": {"reset_token": reset_token}}
+            )
+            # Send email with reset link
+            reset_link = url_for("reset_password", token=reset_token, _external=True)
+            msg = Message("Password Reset Request", recipients=[email])
+            msg.body = f"Click the following link to reset your password: {reset_link}"
+            mail.send(msg)
+            flash(
+                "An email with instructions to reset your password has been sent to your email address."
+            )
+            return redirect(url_for("home"))
+        else:
+            flash("No user found with that email address.")
+    return render_template("recover.html")
 
 
 @app.route("/upload", methods=["GET", "POST"])
